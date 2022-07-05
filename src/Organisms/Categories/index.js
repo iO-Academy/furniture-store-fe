@@ -7,7 +7,7 @@ export default function Category(props) {
                 <h3>{props.name}
                     <span className="badge badge-info float-right">{props.products}</span>
                 </h3>
-
+                <Link to={"/products/" + props.id} className="btn btn-primary">More >></Link>
             </div>
         </div>
     )
