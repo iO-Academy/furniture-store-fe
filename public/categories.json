@@ -1,0 +1,16 @@
+{
+  "message": "Successfully retrieved categories",
+  "data":
+  [
+    {
+      "id": "1",
+      "name": "Chair",
+      "products": "82"
+    },
+    {
+      "id": "2",
+      "name": "Table",
+      "products": "37"
+    }
+  ]
+}
