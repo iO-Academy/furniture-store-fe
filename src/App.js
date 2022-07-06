@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
 import Product from "./Pages/Product";
@@ -16,13 +16,16 @@ export default function App() {
     const [currencyUnit, setCurrencyUnit] = useState('GBP')
 
     return (
-        <>
+        <BrowserRouter>
             <div className="container-fluid">
                 <div className="row bg-dark text-light">
-                    <div className="col-6">
-                        <h1>Furniture Store</h1>
+                    <div className="col-12 col-sm-6">
+                        <h1 className="text-sm-left text-center">
+                            <Link to={"/"} className="text-light">Furniture Store</Link>
+                        </h1>
                     </div>
-                    <div className="col-6 d-flex justify-content-end align-items-center">
+
+                    <div className="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end align-items-center pb-1">
                         <div className="btn-group btn-group-sm mr-3" role="group">
                             <CurrencyButton setActiveCurrency={setCurrencyUnit} activeCurrency={currencyUnit} currency='GBP' />
                             <CurrencyButton setActiveCurrency={setCurrencyUnit} activeCurrency={currencyUnit} currency='USD' />
@@ -42,19 +45,17 @@ export default function App() {
             <div className="container">
                 <CurrencyContext.Provider value={{currency: currencyUnit}}>
                     <UnitContext.Provider value={{unit: measureUnit}}>
-                        <BrowserRouter>
-                            <Routes>
-                                    <Route path="/" element={<Home setCategory={setCategoryName} />} />
-                                    <Route path="/products/:catId" element={<Products category={categoryName} />} />
-                                    <Route path="/products/:catId/:productId" element={<Product category={categoryName} />} />
-                            </Routes>
-                        </BrowserRouter>
+                        <Routes>
+                                <Route path="/" element={<Home setCategory={setCategoryName} />} />
+                                <Route path="/products/:catId" element={<Products category={categoryName} />} />
+                                <Route path="/products/:catId/:productId" element={<Product category={categoryName} />} />
+                        </Routes>
                     </UnitContext.Provider>
                 </CurrencyContext.Provider>
                 <footer className="border-top mt-5 py-3">
                     <p>&copy; Copyright iO Academy 2022</p>
                 </footer>
             </div>
-        </>
+        </BrowserRouter>
     )
 }
