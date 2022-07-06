@@ -22,7 +22,7 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<Home setCategory={setCategoryName} />} />
                         <Route path="/products/:catId" element={<Products category={categoryName} />} />
-                        <Route path="/products/:catId/:productId" element={<Product />} />
+                        <Route path="/products/:catId/:productId" element={<Product category={categoryName} />} />
                     </Routes>
                 </BrowserRouter>
                 <footer className="border-top mt-5 py-3">

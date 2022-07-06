@@ -2,6 +2,7 @@
   "message": "Successfully retrieved product",
   "data":
   {
+    "categoryId": 2,
     "width": 1517,
     "height": 2040,
     "depth": 1445,

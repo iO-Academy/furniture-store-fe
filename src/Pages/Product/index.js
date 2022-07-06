@@ -2,21 +2,37 @@ import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {productURL} from "../../config"
 
-export default function Product() {
+export default function Product(props) {
     const params = useParams()
     const [product, setProduct] = useState([])
+    const [relatedProduct, setRelatedProduct] = useState(false)
 
     useEffect(() => {
-        fetch(productURL)
-            .then(response => response.json())
-            .then(data => setProduct(data.data))
+        getProduct(params.productId)
     }, [])
+
+    const getProduct = (id) => {
+        fetch(productURL + '?id=' + id)
+            .then(response => response.json())
+            .then(data => {
+                setProduct(data.data)
+                if (!isNaN(data.data.related)) {
+                    getRelatedProduct(data.data.related)
+                }
+            })
+    }
+
+    const getRelatedProduct = (id) => {
+        fetch(productURL + '?id=' + id)
+            .then(response => response.json())
+            .then(data => setRelatedProduct(data.data))
+    }
 
     return (
         <>
             <div className="jumbotron mt-4">
-                <h1 className="display-4">Category: </h1>
-                <p className="lead">For more information about any of the below products, click on the more button.</p>
+                <h1 className="display-4">{props.category}</h1>
+                <p className="lead">If this is not the right product for you, use the back button below to see our wide selection of other products.</p>
             </div>
             <div className="row">
                 <div className="col-12 mb-4">
@@ -24,9 +40,25 @@ export default function Product() {
                 </div>
             </div>
             <div className="row">
-                <div className="col-12 border rounded p-4">
-                    <h1>&pound;{product.price}</h1>
+                <div className="col-12">
+                    <div className="border rounded p-4 mb-4">
+                        <span className="badge badge-info float-right">Stock: {product.stock}</span>
+                        <h1>{product.color} {props.category} - &pound;{product.price}</h1>
+                        <h3>Dimensions</h3>
+                        <p>Width: {product.width}mm</p>
+                        <p>Height: {product.height}mm</p>
+                        <p>Depth: {product.depth}mm</p>
+                    </div>
 
+                    {relatedProduct &&
+                        <div className="border rounded p-4 mb-4">
+                            <h4 className="border-bottom pb-2">Similar product</h4>
+                            <span className="badge badge-info float-right">Stock: {relatedProduct.stock}</span>
+                            <h5>&pound;{relatedProduct.price}</h5>
+                            <Link className="btn btn-primary float-right" to={"/products/" + relatedProduct.categoryId + '/' + product.related}>More >></Link>
+                            <p>Color: {relatedProduct.color}</p>
+                        </div>
+                    }
                 </div>
             </div>
         </>
