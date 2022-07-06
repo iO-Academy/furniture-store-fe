@@ -1,16 +1,15 @@
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {productsURL} from "../../config"
-import Product from "../../Organisms/Product";
+import {productURL} from "../../config"
 
-export default function Products() {
+export default function Product() {
     const params = useParams()
-    const [products, setProducts] = useState([])
+    const [product, setProduct] = useState([])
 
     useEffect(() => {
-        fetch(productsURL + '?cat=' + params.catId)
+        fetch(productURL)
             .then(response => response.json())
-            .then(data => setProducts(data))
+            .then(data => setProduct(data.data))
     }, [])
 
     return (
@@ -21,11 +20,14 @@ export default function Products() {
             </div>
             <div className="row">
                 <div className="col-12 mb-4">
-                    <Link to="/"> Back </Link>
+                    <Link to={"/products/" + params.catId}> Back </Link>
                 </div>
             </div>
             <div className="row">
-                {products.map(product => <Product catId={params.catId} productId={product.id} price={product.price} stock={product.stock} color={product.color} />)}
+                <div className="col-12 border rounded p-4">
+                    <h1>&pound;{product.price}</h1>
+
+                </div>
             </div>
         </>
     );

@@ -1,0 +1,13 @@
+{
+  "message": "Successfully retrieved product",
+  "data":
+  {
+    "width": 1517,
+    "height": 2040,
+    "depth": 1445,
+    "price": "48.61",
+    "stock": 8,
+    "related": 525,
+    "color": "Teal"
+  }
+}

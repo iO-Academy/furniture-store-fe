@@ -4,6 +4,7 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
+import Product from "./Pages/Product";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -20,6 +21,7 @@ root.render(
               <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/products/:catId" element={<Products />} />
+                  <Route path="/products/:catId/:productId" element={<Product />} />
               </Routes>
           </BrowserRouter>
           <footer className="border-top mt-5 py-3">
