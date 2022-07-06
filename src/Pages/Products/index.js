@@ -11,7 +11,7 @@ export default function Products(props) {
         fetch(productsURL + '?cat=' + params.catId)
             .then(response => response.json())
             .then(data => setProducts(data))
-    }, [])
+    }, [params.catId])
 
     return (
         <>

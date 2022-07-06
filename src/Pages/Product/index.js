@@ -1,18 +1,18 @@
 import {Link, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {productURL} from "../../config"
+import UnitContext from "../../Atoms/UnitContext";
 
 export default function Product(props) {
     const params = useParams()
+
+    const context = useContext(UnitContext)
+
     const [product, setProduct] = useState([])
     const [relatedProduct, setRelatedProduct] = useState(false)
 
-    useEffect(() => {
-        getProduct(params.productId)
-    }, [])
-
     const getProduct = (id) => {
-        fetch(productURL + '?id=' + id)
+        fetch(productURL + '?id=' + id + '&unit=' + context.unit)
             .then(response => response.json())
             .then(data => {
                 setProduct(data.data)
@@ -23,10 +23,18 @@ export default function Product(props) {
     }
 
     const getRelatedProduct = (id) => {
-        fetch(productURL + '?id=' + id)
+        fetch(productURL + '?id=' + id + '&unit=' + context.unit)
             .then(response => response.json())
             .then(data => setRelatedProduct(data.data))
     }
+
+    useEffect(() => {
+        getProduct(params.productId)
+    }, [params.productId])
+
+    useEffect(() => {
+        getProduct(params.productId)
+    }, [context])
 
     return (
         <>
@@ -45,9 +53,9 @@ export default function Product(props) {
                         <span className="badge badge-info float-right">Stock: {product.stock}</span>
                         <h1>{product.color} {props.category} - &pound;{product.price}</h1>
                         <h3>Dimensions</h3>
-                        <p>Width: {product.width}mm</p>
-                        <p>Height: {product.height}mm</p>
-                        <p>Depth: {product.depth}mm</p>
+                        <p>Width: {product.width}{context.unit}</p>
+                        <p>Height: {product.height}{context.unit}</p>
+                        <p>Depth: {product.depth}{context.unit}</p>
                     </div>
 
                     {relatedProduct &&
