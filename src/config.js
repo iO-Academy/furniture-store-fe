@@ -1,3 +1,5 @@
-export const categoriesURL = '/categories.json';
-export const productsURL = '/products.json';
-export const productURL = '/product.json';
+const baseURL = 'http://localhost:1234';
+
+export const categoriesURL  = baseURL + '/categories.php';
+export const productsURL    = baseURL + '/products.php';
+export const productURL     = baseURL + '/product.php';
