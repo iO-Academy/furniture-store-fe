@@ -1,8 +1,12 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
+import {useState} from "react";
 
 export default function App() {
+
+    const [categoryName, setCategoryName] = useState('')
+
     return (
         <>
             <div className="container-fluid">
@@ -15,8 +19,8 @@ export default function App() {
             <div className="container">
                 <BrowserRouter>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/products/:catId" element={<Products />} />
+                        <Route path="/" element={<Home setCategory={setCategoryName} />} />
+                        <Route path="/products/:catId" element={<Products category={categoryName} />} />
                     </Routes>
                 </BrowserRouter>
                 <footer className="border-top mt-5 py-3">

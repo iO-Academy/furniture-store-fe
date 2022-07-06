@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {productsURL} from "../../config"
 import Product from "../../Organisms/Product";
 
-export default function Products() {
+export default function Products(props) {
     const params = useParams()
     const [products, setProducts] = useState([])
 
@@ -16,7 +16,7 @@ export default function Products() {
     return (
         <>
             <div className="jumbotron mt-4">
-                <h1 className="display-4">Category: </h1>
+                <h1 className="display-4">Category: {props.category}</h1>
                 <p className="lead">For more information about any of the below products, click on the more button.</p>
             </div>
             <div className="row">
