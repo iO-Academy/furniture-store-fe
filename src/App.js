@@ -16,12 +16,12 @@ export default function App() {
         <BrowserRouter>
             <div className="container-fluid">
                 <div className="row bg-dark text-light">
-                    <div className="col-6">
-                        <h1>
+                    <div className="col-12 col-sm-6">
+                        <h1 className="text-sm-left text-center">
                             <Link to={"/"} className="text-light">Furniture Store</Link>
                         </h1>
                     </div>
-                    <div className="col-6 d-flex justify-content-end align-items-center">
+                    <div className="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end align-items-center pb-1">
                         <div className="btn-group btn-group-sm" role="group">
                             <UnitButton setActiveUnit={setMeasureUnit} activeUnit={measureUnit} unit="mm" />
                             <UnitButton setActiveUnit={setMeasureUnit} activeUnit={measureUnit} unit="cm" />
