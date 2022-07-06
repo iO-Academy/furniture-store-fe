@@ -1,18 +1,22 @@
 import {Link, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {productsURL} from "../../config"
+import {useContext, useEffect, useState} from "react";
+import {productsURL, currencySymbol} from "../../config"
 import Product from "../../Organisms/Product";
+import CurrencyContext from "../../Atoms/CurrencyContext";
 
 export default function Products(props) {
     const params = useParams()
+
+    const context = useContext(CurrencyContext)
+
     const [products, setProducts] = useState([])
     const [inStock, setInStock] = useState(false)
 
     useEffect(() => {
-        fetch(productsURL + '?cat=' + params.catId + '&instockonly=' + Number(inStock))
+        fetch(productsURL + '?cat=' + params.catId + '&instockonly=' + Number(inStock) + '&currency=' + context.currency)
             .then(response => response.json())
             .then(data => setProducts(data))
-    }, [params.catId, inStock])
+    }, [params.catId, inStock, context.currency])
 
     const changeStockFilter = () => {
         setInStock(!inStock)
@@ -36,7 +40,7 @@ export default function Products(props) {
                 </div>
             </div>
             <div className="row">
-                {products.map(product => <Product catId={params.catId} productId={product.id} price={product.price} stock={product.stock} color={product.color} />)}
+                {products.map(product => <Product currency={currencySymbol[context.currency]} catId={params.catId} productId={product.id} price={product.price} stock={product.stock} color={product.color} />)}
             </div>
         </>
     );

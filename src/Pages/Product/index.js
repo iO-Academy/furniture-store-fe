@@ -1,18 +1,20 @@
 import {Link, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import {productURL} from "../../config"
+import {currencySymbol, productURL} from "../../config"
 import UnitContext from "../../Atoms/UnitContext";
+import CurrencyContext from "../../Atoms/CurrencyContext";
 
 export default function Product(props) {
     const params = useParams()
 
     const context = useContext(UnitContext)
+    const currencyContext = useContext(CurrencyContext)
 
     const [product, setProduct] = useState([])
     const [relatedProduct, setRelatedProduct] = useState(false)
 
     const getProduct = (id) => {
-        fetch(productURL + '?id=' + id + '&unit=' + context.unit)
+        fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
             .then(response => response.json())
             .then(data => {
                 setProduct(data.data)
@@ -23,18 +25,14 @@ export default function Product(props) {
     }
 
     const getRelatedProduct = (id) => {
-        fetch(productURL + '?id=' + id + '&unit=' + context.unit)
+        fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
             .then(response => response.json())
             .then(data => setRelatedProduct(data.data))
     }
 
     useEffect(() => {
         getProduct(params.productId)
-    }, [params.productId])
-
-    useEffect(() => {
-        getProduct(params.productId)
-    }, [context])
+    }, [params.productId, currencyContext.currency, context])
 
     return (
         <>
@@ -51,7 +49,11 @@ export default function Product(props) {
                 <div className="col-12">
                     <div className="border rounded p-4 mb-4">
                         <span className="badge badge-info float-right">Stock: {product.stock}</span>
-                        <h1>{product.color} {props.category} - &pound;{product.price}</h1>
+                        <h1>
+                            {product.color} {props.category} -&nbsp;
+                            <span dangerouslySetInnerHTML={{__html: currencySymbol[currencyContext.currency]}}></span>
+                            {product.price}
+                        </h1>
                         <h3>Dimensions</h3>
                         <p>Width: {product.width}{context.unit}</p>
                         <p>Height: {product.height}{context.unit}</p>
@@ -62,7 +64,10 @@ export default function Product(props) {
                         <div className="border rounded p-4 mb-4">
                             <h4 className="border-bottom pb-2">Similar product</h4>
                             <span className="badge badge-info float-right">Stock: {relatedProduct.stock}</span>
-                            <h5>&pound;{relatedProduct.price}</h5>
+                            <h5>
+                                <span dangerouslySetInnerHTML={{__html: currencySymbol[currencyContext.currency]}}></span>
+                                {relatedProduct.price}
+                            </h5>
                             <Link className="btn btn-primary float-right" to={"/products/" + relatedProduct.categoryId + '/' + product.related}>More >></Link>
                             <p>Color: {relatedProduct.color}</p>
                         </div>
