@@ -11,15 +11,24 @@ export default function Products(props) {
 
     const [products, setProducts] = useState([])
     const [inStock, setInStock] = useState(false)
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetch(productsURL + '?cat=' + params.catId + '&instockonly=' + Number(inStock) + '&currency=' + context.currency)
-            .then(response => response.json())
-            .then(data => setProducts(data))
+        getProducts()
     }, [params.catId, inStock, context.currency])
 
     const changeStockFilter = () => {
         setInStock(!inStock)
+    }
+
+    const getProducts = async () => {
+        try {
+            const response = await fetch(productsURL + '?cat=' + params.catId + '&instockonly=' + Number(inStock) + '&currency=' + context.currency)
+            const data = await response.json()
+            setProducts(data.data)
+        } catch(e) {
+            setError('Unable to retrieve data')
+        }
     }
 
     return (
@@ -40,7 +49,11 @@ export default function Products(props) {
                 </div>
             </div>
             <div className="row">
-                {products.map(product => <Product currency={currencySymbol[context.currency]} catId={params.catId} productId={product.id} price={product.price} stock={product.stock} color={product.color} />)}
+                {
+                    error &&
+                    <div className="col-12"><div className="alert alert-danger">Error: {error}</div></div>
+                }
+                {products.map(product => <Product key={product.id} currency={currencySymbol[context.currency]} catId={params.catId} productId={product.id} price={product.price} stock={product.stock} color={product.color} />)}
             </div>
         </>
     );

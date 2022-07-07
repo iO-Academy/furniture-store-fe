@@ -12,22 +12,30 @@ export default function Product(props) {
 
     const [product, setProduct] = useState([])
     const [relatedProduct, setRelatedProduct] = useState(false)
+    const [productError, setProductError] = useState('')
+    const [relatedError, setRelatedError] = useState('')
 
-    const getProduct = (id) => {
-        fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
-            .then(response => response.json())
-            .then(data => {
-                setProduct(data.data)
-                if (!isNaN(data.data.related)) {
-                    getRelatedProduct(data.data.related)
-                }
-            })
+    const getProduct = async (id) => {
+        try {
+            const response = await fetch(productURL + '?id=' + id+ '&unit=' + context.unit + '&currency=' + currencyContext.currency)
+            const data = await response.json()
+            setProduct(data.data)
+            if (!isNaN(data.data.related)) {
+                getRelatedProduct(data.data.related)
+            }
+        } catch (e) {
+            setProductError('Unable to retrieve product data')
+        }
     }
 
-    const getRelatedProduct = (id) => {
-        fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
-            .then(response => response.json())
-            .then(data => setRelatedProduct(data.data))
+    const getRelatedProduct = async (id) => {
+        try {
+            const response = await fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
+            const data = await response.json()
+            setRelatedProduct(data.data)
+        } catch (e) {
+            setRelatedError('Unable to retrieve related product data')
+        }
     }
 
     useEffect(() => {
@@ -48,6 +56,10 @@ export default function Product(props) {
             <div className="row">
                 <div className="col-12">
                     <div className="border rounded p-4 mb-4">
+                        {
+                            productError &&
+                            <div className="alert alert-danger">Error: {productError}</div>
+                        }
                         <span className="badge badge-info float-right">Stock: {product.stock}</span>
                         <h1>
                             {product.color} {props.category} -&nbsp;
@@ -71,6 +83,10 @@ export default function Product(props) {
                             <Link className="btn btn-primary float-right" to={"/products/" + relatedProduct.categoryId + '/' + product.related}>More >></Link>
                             <p>Color: {relatedProduct.color}</p>
                         </div>
+                    }
+                    {
+                        relatedError &&
+                        <div className="alert alert-danger">Error: {relatedError}</div>
                     }
                 </div>
             </div>
