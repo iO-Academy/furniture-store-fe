@@ -4,12 +4,21 @@ import {categoriesURL} from "../../config"
 
 export default function Home(props) {
     const [categories, setCategories] = useState([])
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetch(categoriesURL)
-            .then(response => response.json())
-            .then(data => setCategories(data.data))
+        getCategories()
     }, [])
+
+    const getCategories = async () => {
+        try {
+            const response = await fetch(categoriesURL)
+            const data = await response.json()
+            setCategories(data.data)
+        } catch(e) {
+            setError('Unable to retrieve data')
+        }
+    }
 
     return (
         <>
@@ -19,7 +28,11 @@ export default function Home(props) {
                     start by selecting the kind of product you are looking for</p>
             </div>
             <div className="row">
-                {categories.map(cat => <Category setCategory={props.setCategory} name={cat.name} id={cat.id} products={cat.products} />)}
+                {
+                    error &&
+                    <div className="col-12"><div className="alert alert-danger">Error: {error}</div></div>
+                }
+                {categories.map(cat => <Category setCategory={props.setCategory} key={cat.id} name={cat.name} id={cat.id} products={cat.products} />)}
             </div>
         </>
     );
