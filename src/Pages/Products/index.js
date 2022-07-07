@@ -6,12 +6,21 @@ import Product from "../../Organisms/Product";
 export default function Products(props) {
     const params = useParams()
     const [products, setProducts] = useState([])
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        fetch(productsURL + '?cat=' + params.catId)
-            .then(response => response.json())
-            .then(data => setProducts(data.data))
+        getProducts()
     }, [])
+
+    const getProducts = async () => {
+        try {
+            const response = await fetch(productsURL + '?cat=' + params.catId)
+            const data = await response.json()
+            setProducts(data.data)
+        } catch(e) {
+            setError('Unable to retrieve data')
+        }
+    }
 
     return (
         <>
@@ -25,6 +34,10 @@ export default function Products(props) {
                 </div>
             </div>
             <div className="row">
+                {
+                    error &&
+                    <div className="col-12"><div className="alert alert-danger">Error: {error}</div></div>
+                }
                 {products.map(product => <Product key={product.id} price={product.price} stock={product.stock} color={product.color} />)}
             </div>
         </>
