@@ -10,7 +10,7 @@ export default function Products(props) {
     useEffect(() => {
         fetch(productsURL + '?cat=' + params.catId)
             .then(response => response.json())
-            .then(data => setProducts(data))
+            .then(data => setProducts(data.data))
     }, [])
 
     return (
@@ -25,7 +25,7 @@ export default function Products(props) {
                 </div>
             </div>
             <div className="row">
-                {products.map(product => <Product price={product.price} stock={product.stock} color={product.color} />)}
+                {products.map(product => <Product key={product.id} price={product.price} stock={product.stock} color={product.color} />)}
             </div>
         </>
     );
