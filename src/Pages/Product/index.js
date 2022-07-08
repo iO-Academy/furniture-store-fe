@@ -1,6 +1,7 @@
 import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {productURL} from "../../config"
+import handleError from "../../utils/ErrorHandler";
 
 export default function Product(props) {
     const params = useParams()
@@ -16,10 +17,12 @@ export default function Product(props) {
     const getProduct = async (id) => {
         try {
             const response = await fetch(productURL + '?id=' + id)
-            const data = await response.json()
-            setProduct(data.data)
-            if (!isNaN(data.data.related)) {
-                getRelatedProduct(data.data.related)
+            if (await handleError(response, setProductError)) {
+                const data = await response.json()
+                setProduct(data.data)
+                if (!isNaN(data.data.related)) {
+                    getRelatedProduct(data.data.related)
+                }
             }
         } catch (e) {
             setProductError('Unable to retrieve product data')
@@ -29,8 +32,10 @@ export default function Product(props) {
     const getRelatedProduct = async (id) => {
         try {
             const response = await fetch(productURL + '?id=' + id)
-            const data = await response.json()
-            setRelatedProduct(data.data)
+            if (await handleError(response, setRelatedError)) {
+                const data = await response.json()
+                setRelatedProduct(data.data)
+            }
         } catch (e) {
             setRelatedError('Unable to retrieve related product data')
         }
@@ -54,12 +59,17 @@ export default function Product(props) {
                             productError &&
                             <div className="alert alert-danger">Error: {productError}</div>
                         }
-                        <span className="badge badge-info float-right">Stock: {product.stock}</span>
-                        <h1>{product.color} {props.category} - &pound;{product.price}</h1>
-                        <h3>Dimensions</h3>
-                        <p>Width: {product.width}mm</p>
-                        <p>Height: {product.height}mm</p>
-                        <p>Depth: {product.depth}mm</p>
+                        {
+                            !productError &&
+                            <>
+                                <span className="badge badge-info float-right">Stock: {product.stock}</span>
+                                <h1>{product.color} {props.category} - &pound;{product.price}</h1>
+                                <h3>Dimensions</h3>
+                                <p>Width: {product.width}mm</p>
+                                <p>Height: {product.height}mm</p>
+                                <p>Depth: {product.depth}mm</p>
+                            </>
+                        }
                     </div>
 
                     {relatedProduct &&
