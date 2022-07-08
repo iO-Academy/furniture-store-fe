@@ -2,6 +2,7 @@ import {Link, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {productsURL} from "../../config"
 import Product from "../../Organisms/Product";
+import handleError from "../../utils/ErrorHandler";
 
 export default function Products(props) {
     const params = useParams()
@@ -15,8 +16,10 @@ export default function Products(props) {
     const getProducts = async () => {
         try {
             const response = await fetch(productsURL + '?cat=' + params.catId)
-            const data = await response.json()
-            setProducts(data.data)
+            if (await handleError(response, setError)) {
+                const data = await response.json()
+                setProducts(data.data)
+            }
         } catch(e) {
             setError('Unable to retrieve data')
         }
