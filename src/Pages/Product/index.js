@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {currencySymbol, productURL} from "../../config"
 import UnitContext from "../../Atoms/UnitContext";
 import CurrencyContext from "../../Atoms/CurrencyContext";
+import handleError from "../../utils/ErrorHandler";
 
 export default function Product(props) {
     const params = useParams()
@@ -17,11 +18,13 @@ export default function Product(props) {
 
     const getProduct = async (id) => {
         try {
-            const response = await fetch(productURL + '?id=' + id+ '&unit=' + context.unit + '&currency=' + currencyContext.currency)
-            const data = await response.json()
-            setProduct(data.data)
-            if (!isNaN(data.data.related)) {
-                getRelatedProduct(data.data.related)
+            const response = await fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
+            if (await handleError(response, setProductError)) {
+                const data = await response.json()
+                setProduct(data.data)
+                if (!isNaN(data.data.related)) {
+                    getRelatedProduct(data.data.related)
+                }
             }
         } catch (e) {
             setProductError('Unable to retrieve product data')
@@ -31,8 +34,10 @@ export default function Product(props) {
     const getRelatedProduct = async (id) => {
         try {
             const response = await fetch(productURL + '?id=' + id + '&unit=' + context.unit + '&currency=' + currencyContext.currency)
-            const data = await response.json()
-            setRelatedProduct(data.data)
+            if (await handleError(response, setRelatedError)) {
+                const data = await response.json()
+                setRelatedProduct(data.data)
+            }
         } catch (e) {
             setRelatedError('Unable to retrieve related product data')
         }
@@ -60,16 +65,21 @@ export default function Product(props) {
                             productError &&
                             <div className="alert alert-danger">Error: {productError}</div>
                         }
-                        <span className="badge badge-info float-right">Stock: {product.stock}</span>
-                        <h1>
-                            {product.color} {props.category} -&nbsp;
-                            <span dangerouslySetInnerHTML={{__html: currencySymbol[currencyContext.currency]}}></span>
-                            {product.price}
-                        </h1>
-                        <h3>Dimensions</h3>
-                        <p>Width: {product.width}{context.unit}</p>
-                        <p>Height: {product.height}{context.unit}</p>
-                        <p>Depth: {product.depth}{context.unit}</p>
+                        {
+                            !productError &&
+                            <>
+                                <span className="badge badge-info float-right">Stock: {product.stock}</span>
+                                <h1>
+                                    {product.color} {props.category} -&nbsp;
+                                    <span dangerouslySetInnerHTML={{__html: currencySymbol[currencyContext.currency]}}></span>
+                                    {product.price}
+                                </h1>
+                                <h3>Dimensions</h3>
+                                <p>Width: {product.width}{context.unit}</p>
+                                <p>Height: {product.height}{context.unit}</p>
+                                <p>Depth: {product.depth}{context.unit}</p>
+                            </>
+                        }
                     </div>
 
                     {relatedProduct &&
