@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import Category from "../../Organisms/Categories";
 import {categoriesURL} from "../../config"
+import handleError from "../../utils/ErrorHandler";
 
 export default function Home() {
     const [categories, setCategories] = useState([])
@@ -13,8 +14,10 @@ export default function Home() {
     const getCategories = async () => {
         try {
             const response = await fetch(categoriesURL)
-            const data = await response.json()
-            setCategories(data.data)
+            if (await handleError(response, setError)) {
+                const data = await response.json()
+                setCategories(data.data)
+            }
         } catch(e) {
             setError('Unable to retrieve data')
         }
